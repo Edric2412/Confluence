@@ -48,21 +48,44 @@
             };
 
             const student = STUDENTS_DATA.find(s => s.roll_no === rollNo);
-            if (!student) {
-                return result;
+            let department;
+            let achiever;
+
+            const DEPARTMENT_MAPPING = {
+                "BDS": "B.Sc. Data Science",
+                "BBA": "BBA",
+                "BPS": "BA. Political Science",
+                "BCO": "B.Com",
+                "BIB": "BBA IB",
+                "BSS": "Sports Science",
+                "BEO": "Economics",
+                "BPA": "B.Com PA",
+                "BVC": "Visual Communication",
+                "TCW": "Tamil Creative Writing",
+                "BPY": "Psychology",
+                "MSW": "Social Work",
+                "MPS": "MA. Political Science"
+            };
+
+            if (student) {
+                department = student.department;
+                achiever = student.achiever === "yes";
+            } else {
+                // Extract department from roll number for non-achievers
+                const deptCode = rollNo.substring(2, 5).toUpperCase();
+                department = DEPARTMENT_MAPPING[deptCode];
+                achiever = false; // Assume non-achiever if not in STUDENTS_DATA
+
+                if (!department) {
+                    return { ...result, error: "Invalid roll number or department not found." };
+                }
             }
 
-            const department = student.department;
-            let achiever = student.achiever === "yes";
 
-            // Check if the department exists in SEATING_DATA
-            if (!SEATING_DATA.some(s => s.department === department)) {
-                achiever = true;
-            }
 
             if (achiever) {
                 return {
-                    name: student.name,
+                    name: student ? student.name : "Unknown Student",
                     department: department,
                     achiever: true,
                     highlight_rows: ["0", "1"],
@@ -73,7 +96,16 @@
             } else {
                 const seatInfo = SEATING_DATA.find(s => s.department === department);
                 if (!seatInfo) {
-                    return { ...result, error: "Seating information not found for department" };
+                    return {
+                        name: student ? student.name : "Unknown Student",
+                        department: department,
+                        achiever: false,
+                        highlight_rows: [],
+                        highlight_seats: [],
+                        color: "#0077b6",
+                        no_seating_info: true,
+                        cache_time: Math.floor(Date.now() / 1000)
+                    };
                 }
 
                 const startIdx = ROW_LABELS.indexOf(seatInfo.row_start);
@@ -87,7 +119,7 @@
                 const color = seatInfo.color;
 
                 return {
-                    name: student.name,
+                    name: student ? student.name : "Unknown Student",
                     department: department,
                     achiever: false,
                     highlight_rows: highlightRows,
@@ -576,6 +608,14 @@
                 clearHighlights();
                 departmentInfo.textContent = data.department;
 
+                // Handle case where seating information is not yet available
+                if (data.no_seating_info) {
+                    clearHighlights();
+                    welcomeMessage.innerHTML = `<div class=\"space-y-1\"><div>Seating information for the <span class=\"text-light_cyan-500 font-medium\">${data.department}</span> Department will be available soon.</div></div>`;
+                    welcomeMessage.classList.remove('hidden');
+                    return;
+                }
+
                 // Generate welcome message
                 const wingText = data.highlight_seats[0] <= 15 ? "left wing" : "right wing";
                 const rowsText = data.highlight_rows.length === 1 
@@ -596,8 +636,7 @@
                          <div class="mt-1 text-light_cyan-500 font-semibold text-lg">Congratulations !! 🎉</div>
                        </div>`
                     : `<div class="space-y-1">
-                         <div>Hi ${nameSpan}!</div>
-                         <div>Your department (${deptSpan}) is allocated at</div>
+                         <div>Student of ${deptSpan} Department! Your seating is in the</div>
                          <div class="text-base sm:text-lg font-medium">${rowSpan} in the ${wingSpan}</div>
                        </div>`;
                 
