@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#03045e">
+    <meta name="description" content="Find your seat assignment quickly and easily with our interactive seating visualizer.">
+    <title>Student Seating Visualizer</title>
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <script type="module">
+        // data.js content
+        const STUDENTS_DATA = [
+            { "roll_no": "23BDS001", "name": "Adithya Raghavan", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "23BDS002", "name": "Anamika", "department": "B.Sc. Data Science", "achiever": "no" },
+            { "roll_no": "23BCA101", "name": "Idk", "department": "BCA", "achiever": "no" },
+            { "roll_no": "24BBA105", "name": "Someone", "department": "BBA", "achiever": "no" }
+        ];
+
+        const SEATING_DATA = [
+            { "department": "B.Sc. Data Science", "row_start": "T", "row_end": "V", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+            { "department": "BBA", "row_start": "H", "row_end": "J", "seat_start": 16, "seat_end": 30, "color": "#0077b6" }
+        ];
+
+        const ROW_LABELS = (
+            function() {
+                const rows = [];
+                for (let i = 0; i < 26; i++) {
+                    rows.push(String.fromCharCode(65 + i)); // A-Z
+                }
+                for (let i = 0; i < 20; i++) { // AA-TT
+                    const char = String.fromCharCode(65 + i);
+                    rows.push(char + char);
+                }
+                return rows;
+            }
+        )();
+
+        // logic.js content
+        window.findSeat = function(rollNo) {
+            const result = {
+                error: "Roll number not found",
+                cache_time: Math.floor(Date.now() / 1000)
+            };
+
+            const student = STUDENTS_DATA.find(s => s.roll_no === rollNo);
+            if (!student) {
+                return result;
+            }
+
+            const department = student.department;
+            let achiever = student.achiever === "yes";
+
+            // Check if the department exists in SEATING_DATA
+            if (!SEATING_DATA.some(s => s.department === department)) {
+                achiever = true;
+            }
+
+            if (achiever) {
+                return {
+                    name: student.name,
+                    department: department,
+                    achiever: true,
+                    highlight_rows: ["0", "1"],
+                    highlight_seats: [1, 15],
+                    color: "#ff4d6d",
+                    cache_time: Math.floor(Date.now() / 1000)
+                };
+            } else {
+                const seatInfo = SEATING_DATA.find(s => s.department === department);
+                if (!seatInfo) {
+                    return { ...result, error: "Seating information not found for department" };
+                }
+
+                const startIdx = ROW_LABELS.indexOf(seatInfo.row_start);
+                const endIdx = ROW_LABELS.indexOf(seatInfo.row_end);
+
+                const highlightRows = ROW_LABELS.slice(startIdx, endIdx + 1);
+                const highlightSeats = [
+                    seatInfo.seat_start,
+                    seatInfo.seat_end
+                ];
+                const color = seatInfo.color;
+
+                return {
+                    name: student.name,
+                    department: department,
+                    achiever: false,
+                    highlight_rows: highlightRows,
+                    highlight_seats: highlightSeats,
+                    color: color,
+                    cache_time: Math.floor(Date.now() / 1000)
+                };
+            }
+        }
+        
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'federal_blue': { DEFAULT: '#03045e', '100': '#010113', '200': '#010226', '300': '#020338', '400': '#02044b', '500': '#03045e', '600': '#0508ae', '700': '#0f12f8', '800': '#5f61fa', '900': '#afb0fd' },
+                        'honolulu_blue': { DEFAULT: '#0077b6', '100': '#001825', '200': '#003049', '300': '#00486e', '400': '#005f93', '500': '#0077b6', '600': '#00a2f9', '700': '#3bbaff', '800': '#7cd1ff', '900': '#bee8ff' },
+                        'pacific_cyan': { DEFAULT: '#00b4d8', '100': '#00242b', '200': '#004756', '300': '#006b81', '400': '#008fab', '500': '#00b4d8', '600': '#12d8ff', '700': '#4ee1ff', '800': '#89ebff', '900': '#c4f5ff' },
+                        'non_photo_blue': { DEFAULT: '#90e0ef', '100': '#0a3a43', '200': '#137586', '300': '#1dafc9', '400': '#4ccfe6', '500': '#90e0ef', '600': '#a6e7f2', '700': '#bcedf5', '800': '#d2f3f9', '900': '#e9f9fc' },
+                        'light_cyan': { DEFAULT: '#caf0f8', '100': '#0a444f', '200': '#15889f', '300': '#2ac4e3', '400': '#79daee', '500': '#caf0f8', '600': '#d4f3f9', '700': '#dff6fb', '800': '#e9f9fc', '900': '#f4fcfe' }
+                    },
+                    fontFamily: {
+                        'header': ['Playfair Display', 'serif'],
+                        'body': ['IBM Plex Serif', 'serif'],
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulse: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
+                        },
+                        highlightFlash: {
+                            '0%': { boxShadow: '0 0 15px 3px var(--highlight-color), 0 2px 4px rgba(0,0,0,0.2)' },
+                            '50%': { boxShadow: '0 0 30px 10px var(--highlight-color), 0 2px 4px rgba(0,0,0,0.2)' },
+                            '100%': { boxShadow: '0 0 15px 3px var(--highlight-color), 0 2px 4px rgba(0,0,0,0.2)' },
+                        }
+                    },
+                    animation: {
+                        gradient: 'gradient 15s ease infinite',
+                        fadeIn: 'fadeIn 0.5s ease-out forwards',
+                        pulse: 'pulse 2s infinite',
+                        highlightFlash: 'highlightFlash 0.7s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .scrollbar-thin::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(0, 119, 182, 0.5);
+            border-radius: 2px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 119, 182, 0.8);
+        }
+
+        /* Custom styles for 3D seat effect and animations */
+        .seat {
+            transition: transform 0.18s ease-in-out, opacity 0.18s ease-in-out;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+            /* avoid changing layout properties frequently */
+            transform: translateZ(0);
+            background-image: linear-gradient(to top, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.35));
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            will-change: transform, opacity;
+        }
+        @media (hover: hover) {
+            .seat:hover {
+                transform: translateY(-2px) scale(1.1);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+        }
+        .seat:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+        .highlight {
+            background-color: var(--highlight-color);
+            color: white;
+            box-shadow: 0 0 15px 3px var(--highlight-color), 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .achiever-highlight {
+            background-color: #00b4d8 !important; /* Pacific Cyan */
+            color: white;
+            box-shadow: 0 0 15px 3px #00b4d8, 0 2px 4px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        .tooltip {
+            transition: opacity 0.16s linear, transform 0.16s linear;
+            will-change: transform, opacity;
+            will-change: transform;
+        }
+        
+        /* Glassmorphism card enhancements */
+        #search-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            will-change: transform;
+        }
+        .card-glare {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2;
+            will-change: transform, opacity;
+        }
+        /* Limit paint/layout scope to the seating grid to avoid global repainting */
+        #seating-grid {
+            contain: layout paint;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body class="font-body antialiased text-gray-800 bg-federal_blue-100 flex flex-col min-h-screen">
+
+    <!-- Animated Gradient Background -->
+    <div class="fixed inset-0 -z-10 bg-gradient-to-r from-non_photo_blue-500 via-light_cyan-500 to-light_cyan-600 animate-gradient" style="background-size: 200% 200%;"></div>
+
+    <header class="w-full p-4 text-center">
+        <!-- Logo and Titles -->
+        <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+            <img src="./images/kclas-removebg-preview.png" 
+                 alt="KCLAS Logo" 
+                 class="w-20 sm:w-24 h-20 sm:h-24 object-contain backdrop-blur-sm"
+                 style="filter: drop-shadow(0 0 10px rgba(3, 4, 94, 0.3));"
+                 loading="lazy">
+
+            <div class="text-center md:text-left space-y-2">
+                <h1 class="font-header text-4xl sm:text-5xl font-normal text-federal_blue-500">Seating Visualizer</h1>
+                <div class="space-y-0.5">
+                    <h2 class="font-header text-base sm:text-lg font-normal text-honolulu_blue-600">Department of Data Science</h2>
+                    <h3 class="font-header text-sm sm:text-base font-normal text-honolulu_blue-500">KCLAS</h3>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full flex flex-col items-center justify-center p-3 sm:p-6 lg:p-8 overflow-hidden">
+
+        <!-- Search Card -->
+        <div id="search-card" class="relative w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-federal_blue-500/20 p-4 sm:p-6 text-center transition-all duration-300 animate-fadeIn overflow-hidden">
+            <div class="card-content relative z-10">
+                <h2 class="text-xl sm:text-3xl text-federal_blue-600 mb-2 font-header font-normal">Find Your Seat</h2>
+                <p class="text-honolulu_blue-700/90 mb-4 sm:mb-6 text-sm sm:text-base">Enter your roll number below.</p>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                    <input type="text" id="roll-no-input" 
+                           placeholder="Roll No." 
+                           class="w-full px-4 py-3 rounded-lg bg-white/30 border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-honolulu_blue-500/50 focus:ring-white/80 placeholder-honolulu_blue-800 text-honolulu_blue-500 font-semibold tracking-wider text-base"
+                           inputmode="text"
+                           autocomplete="off"
+                           autocapitalize="characters">
+                    <button id="search-btn" 
+                            class="w-full sm:w-28 h-12 bg-honolulu_blue-500 hover:bg-honolulu_blue-600 active:bg-honolulu_blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-honolulu_blue-500/50 focus:ring-white/80">
+                        <span class="button-text">Find</span>
+                        <svg class="button-icon h-5 w-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                        <svg class="spinner hidden h-6 w-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="card-glare"></div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-alert" class="hidden w-full max-w-md bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-4 animate-fadeIn" role="alert">
+            <strong class="font-bold">Oops!</strong>
+            <span class="block sm:inline" id="error-message">Invalid roll number. Please try again.</span>
+        </div>
+
+        <!-- Seating Visualization Section -->
+        <div id="seating-chart-container" class="w-full max-w-7xl mt-4 sm:mt-8 bg-federal_blue-500/30 backdrop-blur-sm rounded-2xl shadow-lg shadow-federal_blue-500/40 border border-white/20 p-3 sm:p-6 hidden animate-fadeIn">
+            <div class="flex flex-col gap-4 mb-4">
+                <!-- Welcome Message -->
+                <div id="welcome-message" class="text-white text-sm sm:text-base text-center bg-gradient-to-r from-federal_blue-500/60 via-honolulu_blue-500/60 to-federal_blue-500/60 backdrop-blur-sm rounded-lg p-4 hidden animate-fadeIn shadow-lg border border-white/10">
+                </div>
+                
+                <!-- Info Section -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
+                    <div id="department-info" class="text-white font-bold text-base sm:text-xl text-center sm:text-left"></div>
+                    <div class="flex flex-wrap justify-center sm:flex-nowrap items-center gap-3 sm:space-x-4">
+                        <div class="flex items-center space-x-2"><div class="w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-honolulu_blue-500"></div><span class="text-white/80 text-xs sm:text-sm">Your Dept.</span></div>
+                        <div class="flex items-center space-x-2"><div class="w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-pacific_cyan"></div><span class="text-white/80 text-xs sm:text-sm">Achiever</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative">
+                <div id="seating-grid" class="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-honolulu_blue-500 scrollbar-track-transparent">
+                    <!-- Seats will be generated here by JavaScript -->
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-t from-federal_blue-500/30 to-transparent"></div>
+            </div>
+            <div class="mt-2 text-center">
+                <p class="text-white/60 text-xs">Swipe horizontally to view more seats</p>
+            </div>
+        </div>
+
+    </main>
+    
+    <footer class="w-full p-4 text-center text-federal_blue-500/90 text-sm font-semibold">
+        <p>Made by the Department of Data Science</p>
+    </footer>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="hidden absolute bg-gray-900 text-white text-xs rounded-md py-1 px-2 pointer-events-none opacity-0 transform -translate-y-2 z-50"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rollNoInput = document.getElementById('roll-no-input');
+            const searchBtn = document.getElementById('search-btn');
+            const seatingChartContainer = document.getElementById('seating-chart-container');
+            const seatingGrid = document.getElementById('seating-grid');
+            const departmentInfo = document.getElementById('department-info');
+            const errorAlert = document.getElementById('error-alert');
+            const errorMessage = document.getElementById('error-message');
+            const tooltip = document.getElementById('tooltip');
+            const welcomeMessage = document.getElementById('welcome-message');
+
+            const searchCard = document.getElementById('search-card');
+            const glare = searchCard.querySelector('.card-glare');
+
+            const buttonText = searchBtn.querySelector('.button-text');
+            const buttonIcon = searchBtn.querySelector('.button-icon');
+            const spinner = searchBtn.querySelector('.spinner');
+            
+            const SEATS_PER_ROW = 30;
+            const AISLE_AFTER_SEAT = 15;
+
+            // Cache for seat elements keyed by row
+            const SEAT_CACHE = new Map();
+
+            // --- Row Label Generation (Matches FastAPI backend) ---
+            function generateRowLabels() {
+                const rows = [];
+                // A..Z
+                for (let i = 0; i < 26; i++) {
+                    rows.push(String.fromCharCode(65 + i));
+                }
+                // AA, BB, ... TT
+                for (let i = 0; i < 20; i++) {
+                    const char = String.fromCharCode(65 + i);
+                    const pair = char + char;
+                    rows.push(pair);
+                    if (pair === "TT") break;
+                }
+                return rows;
+            }
+
+            const ROW_LABELS = generateRowLabels();
+
+            // --- UI Generation ---
+            function createSeatingGrid() {
+                seatingGrid.innerHTML = '';
+                SEAT_CACHE.clear();
+
+                const fragment = document.createDocumentFragment();
+
+                // Stage
+                const stageEl = document.createElement('div');
+                stageEl.className = 'flex items-center mb-8 min-w-max';
+                const labelCell = document.createElement('div');
+                labelCell.className = 'w-10 text-center font-bold text-white/80 text-sm';
+                stageEl.appendChild(labelCell);
+                const stagePlatform = document.createElement('div');
+                stagePlatform.className = 'h-12 flex items-center justify-center rounded-md text-sm font-semibold text-federal_blue-100 bg-gradient-to-t from-honolulu_blue-500/30 to-honolulu_blue-500/20 transition-all duration-200';
+                stagePlatform.style.width = `${(SEATS_PER_ROW * 28) + (29 * 4) + 32}px`;
+                stagePlatform.textContent = 'STAGE';
+                stageEl.appendChild(stagePlatform);
+                fragment.appendChild(stageEl);
+
+                // Add two rows for achievers without labels
+                for (let i = 0; i < 2; i++) {
+                    const rowEl = document.createElement('div');
+                    rowEl.className = 'flex items-center space-x-1 my-2 min-w-max';
+                    rowEl.style.animation = `fadeIn 0.5s ease-out forwards ${i * 0.02}s`;
+                    rowEl.style.opacity = 0;
+
+                    const labelEl = document.createElement('div');
+                    labelEl.className = 'w-10 text-center font-bold text-white/80 text-sm';
+                    labelEl.textContent = ''; // No label
+                    rowEl.appendChild(labelEl);
+
+                    const seatsFragment = document.createDocumentFragment();
+                    const rowSeats = [];
+
+                    for (let j = 1; j <= SEATS_PER_ROW; j++) {
+                        const seatEl = document.createElement('div');
+                        seatEl.className = 'seat w-7 h-7 flex items-center justify-center rounded-md text-xs font-semibold text-federal_blue-100 cursor-pointer';
+                        
+                        seatEl.dataset.achiever = 'true';
+                        
+                        seatEl.dataset.row = `${i}`;
+                        seatEl.dataset.seat = j;
+                        seatEl.dataset.wing = j <= AISLE_AFTER_SEAT ? 'Left' : 'Right';
+                        seatEl.textContent = j;
+
+                        seatsFragment.appendChild(seatEl);
+                        rowSeats.push(seatEl);
+
+                        if (j === AISLE_AFTER_SEAT) {
+                            const aisleEl = document.createElement('div');
+                            aisleEl.className = 'w-8';
+                            seatsFragment.appendChild(aisleEl);
+                        }
+                    }
+                    rowEl.appendChild(seatsFragment);
+                    fragment.appendChild(rowEl);
+                    SEAT_CACHE.set(`${i}`, rowSeats);
+                }
+
+                // Add a separator
+                const separator = document.createElement('hr');
+                separator.className = 'border-t-2 border-white/20 my-4';
+                fragment.appendChild(separator);
+
+
+                ROW_LABELS.forEach((rowLabel, i) => {
+                    const rowEl = document.createElement('div');
+                    rowEl.className = 'flex items-center space-x-1 my-2 min-w-max';
+                    rowEl.style.animation = `fadeIn 0.5s ease-out forwards ${(i + 2) * 0.02}s`;
+                    rowEl.style.opacity = 0;
+
+                    const labelEl = document.createElement('div');
+                    labelEl.className = 'w-10 text-center font-bold text-white/80 text-sm';
+                    labelEl.textContent = rowLabel;
+                    rowEl.appendChild(labelEl);
+
+                    const seatsFragment = document.createDocumentFragment();
+                    const rowSeats = [];
+
+                    for (let j = 1; j <= SEATS_PER_ROW; j++) {
+                        const seatEl = document.createElement('div');
+                        seatEl.className = 'seat w-7 h-7 flex items-center justify-center rounded-md text-xs font-semibold text-federal_blue-100 cursor-pointer';
+                        seatEl.dataset.row = rowLabel;
+                        seatEl.dataset.seat = j;
+                        seatEl.dataset.wing = j <= AISLE_AFTER_SEAT ? 'Left' : 'Right';
+                        seatEl.textContent = j;
+
+                        seatsFragment.appendChild(seatEl);
+                        rowSeats.push(seatEl);
+
+                        if (j === AISLE_AFTER_SEAT) {
+                            const aisleEl = document.createElement('div');
+                            aisleEl.className = 'w-8';
+                            seatsFragment.appendChild(aisleEl);
+                        }
+                    }
+
+                    rowEl.appendChild(seatsFragment);
+                    fragment.appendChild(rowEl);
+                    SEAT_CACHE.set(rowLabel, rowSeats);
+                });
+
+                seatingGrid.appendChild(fragment);
+                addSeatEventListeners();
+            }
+            
+            // --- Event Handling & Interactivity ---
+            function addSeatEventListeners() {
+                // Use event delegation where possible to avoid attaching thousands of handlers
+                seatingGrid.addEventListener('click', (e) => {
+                    const seat = e.target.closest('.seat');
+                    if (!seat) return;
+                    seat.classList.add('clicked');
+                    setTimeout(() => seat.classList.remove('clicked'), 100);
+                });
+
+                // Tooltip handling: throttle updates with rAF
+                let rafId = null;
+                let lastEvent = null;
+
+                function scheduleTooltipUpdate(ev) {
+                    lastEvent = ev;
+                    if (rafId) return;
+                    rafId = requestAnimationFrame(() => {
+                        rafId = null;
+                        const target = lastEvent.target.closest('.seat');
+                        if (!target) return;
+                        tooltip.textContent = `Row: ${target.dataset.row}, Seat: ${target.dataset.seat} (${target.dataset.wing})`;
+                        tooltip.style.display = 'block';
+                        tooltip.style.opacity = '1';
+                        // Use transform for positioning to avoid layout trashing
+                        const x = lastEvent.pageX + 10;
+                        const y = lastEvent.pageY - 30;
+                        tooltip.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                    });
+                }
+
+                seatingGrid.addEventListener('mouseover', (e) => {
+                    const seat = e.target.closest('.seat');
+                    if (!seat) return;
+                    scheduleTooltipUpdate(e);
+                });
+
+                seatingGrid.addEventListener('mousemove', (e) => {
+                    const seat = e.target.closest('.seat');
+                    if (!seat) return;
+                    scheduleTooltipUpdate(e);
+                });
+
+                seatingGrid.addEventListener('mouseout', (e) => {
+                    const seat = e.target.closest('.seat');
+                    if (!seat) return;
+                    if (rafId) {
+                        cancelAnimationFrame(rafId);
+                        rafId = null;
+                    }
+                    tooltip.style.opacity = '0';
+                    tooltip.style.transform = 'translate3d(0, -0.5rem, 0)';
+                    setTimeout(() => {
+                        if (tooltip.style.opacity === '0') tooltip.style.display = 'none';
+                    }, 200);
+                });
+            }
+
+            function positionTooltip(e) {
+                // Kept for backward compatibility but heavy operations moved to rAF throttle
+                tooltip.style.transform = `translate3d(${e.pageX + 10}px, ${e.pageY - 30}px, 0)`;
+            }
+
+            function clearHighlights() {
+                document.querySelectorAll('.seat').forEach(seat => {
+                    seat.classList.remove('highlight', 'achiever-highlight', 'animate-highlightFlash');
+                    seat.style.backgroundColor = '';
+                    seat.style.borderColor = '';
+                    seat.style.color = '';
+                    seat.style.setProperty('--highlight-color', 'transparent');
+                    seat.style.animationName = '';
+                });
+                welcomeMessage.classList.add('hidden');
+            }
+
+            function applyHighlights(data) {
+                clearHighlights();
+                departmentInfo.textContent = data.department;
+
+                // Generate welcome message
+                const wingText = data.highlight_seats[0] <= 15 ? "left wing" : "right wing";
+                const rowsText = data.highlight_rows.length === 1 
+                    ? `row ${data.highlight_rows[0]}` 
+                    : `rows ${data.highlight_rows[0]} - ${data.highlight_rows[data.highlight_rows.length-1]}`;
+
+                // Create HTML structure for styled message
+                const nameSpan = `<span class="font-semibold text-base sm:text-lg">${data.name}</span>`;
+                const deptSpan = `<span class="text-light_cyan-500 font-medium">${data.department}</span>`;
+                const rowSpan = `<span class="font-bold text-pacific_cyan-400">${rowsText}</span>`;
+                const wingSpan = `<span class="font-bold text-pacific_cyan-400">${wingText}</span>`;
+                
+                let message = data.achiever
+                    ? `<div class="space-y-1">
+                         <div>Hi ${nameSpan} !! </div>
+                         <div>As an achiever, your seat is located in</div>
+                         <div class="text-base sm:text-lg font-medium">${rowSpan} at the ${wingSpan}</div>
+                         <div class="mt-1 text-light_cyan-500 font-semibold text-lg">Congratulations !! 🎉</div>
+                       </div>`
+                    : `<div class="space-y-1">
+                         <div>Hi ${nameSpan}!</div>
+                         <div>Your department (${deptSpan}) is allocated at</div>
+                         <div class="text-base sm:text-lg font-medium">${rowSpan} in the ${wingSpan}</div>
+                       </div>`;
+                
+                welcomeMessage.innerHTML = message;
+                welcomeMessage.classList.remove('hidden');
+
+                document.querySelectorAll('.seat').forEach(seat => {
+                    const inRow = data.highlight_rows.includes(seat.dataset.row);
+                    const inSeatRange = parseInt(seat.dataset.seat) >= data.highlight_seats[0] && parseInt(seat.dataset.seat) <= data.highlight_seats[1];
+
+                    if (inRow && inSeatRange) {
+                        if (data.achiever || seat.dataset.achiever === 'true') {
+                            seat.classList.add('achiever-highlight');
+                        } else {
+                            seat.classList.add('highlight');
+                            seat.style.backgroundColor = data.color;
+                            seat.style.setProperty('--highlight-color', data.color);
+                        }
+                        // Only add flash animation if it's not the achiever's pulsing animation
+                        if (!data.achiever && seat.dataset.achiever !== 'true') {
+                           seat.classList.add('animate-highlightFlash');
+                           seat.addEventListener('animationend', () => {
+                               seat.classList.remove('animate-highlightFlash');
+                           }, { once: true });
+                        }
+                    }
+                });
+            }
+            
+            function showAlert(msg) {
+                errorMessage.textContent = msg;
+                errorAlert.classList.remove('hidden');
+            }
+
+            function hideAlert() {
+                errorAlert.classList.add('hidden');
+            }
+            
+            function showLoading(isLoading) {
+                searchBtn.disabled = isLoading;
+                if (isLoading) {
+                    buttonText.classList.add('hidden');
+                    buttonIcon.classList.add('hidden');
+                    spinner.classList.remove('hidden');
+                } else {
+                    buttonText.classList.remove('hidden');
+                    buttonIcon.classList.remove('hidden');
+                    spinner.classList.add('hidden');
+                }
+            }
+
+            async function handleSearch() {
+                const rollNo = rollNoInput.value.trim().toUpperCase();
+                if (!rollNo) {
+                    showAlert("Please enter a roll number.");
+                    return;
+                }
+                
+                hideAlert();
+                showLoading(true);
+
+                try {
+                    const data = findSeat(rollNo);
+                    if (data.error) {
+                        showAlert(data.error);
+                        return;
+                    }
+
+                applyHighlights(data);
+                seatingChartContainer.classList.remove('hidden');
+                
+                // First scroll the container into view
+                seatingChartContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Then find and scroll to the first highlighted seat
+                setTimeout(() => {
+                    const firstHighlightedSeat = document.querySelector('.highlight, .achiever-highlight');
+                    if (firstHighlightedSeat) {
+                        const container = document.getElementById('seating-grid');
+                        // Use element.scrollTo with behavior to avoid layout thrash and give the browser a hint
+                        const left = Math.max(0, firstHighlightedSeat.offsetLeft - (container.clientWidth / 2) + (firstHighlightedSeat.offsetWidth / 2));
+                        container.scrollTo({ left, behavior: 'smooth' });
+                    }
+                }, 500); // Wait for the first scroll to complete
+                } catch (error) {
+                    showAlert(error.message);
+                    seatingChartContainer.classList.add('hidden');
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            // --- Glass Card Interaction Logic ---
+            // Throttle glare and tilt to animation frames to avoid excessive layout work
+            let glareRaf = null;
+            searchCard.addEventListener('mousemove', (e) => {
+                const rect = searchCard.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                if (glareRaf) return;
+                glareRaf = requestAnimationFrame(() => {
+                    glareRaf = null;
+                    glare.style.transform = `translate3d(${x - rect.width/2}px, ${y - rect.height/2}px, 0)`;
+                    const rotateY = (x - rect.width / 2) / 20;
+                    const rotateX = -(y - rect.height / 2) / 20;
+                    searchCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                });
+            });
+
+            searchCard.addEventListener('mouseenter', () => {
+                searchCard.style.transition = 'transform 0.1s ease-out';
+                glare.style.transition = 'opacity 0.2s ease-in';
+                glare.style.opacity = '1';
+            });
+
+            searchCard.addEventListener('mouseleave', () => {
+                searchCard.style.transition = 'transform 0.5s ease-in-out';
+                searchCard.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                glare.style.transition = 'opacity 0.5s ease-out';
+                glare.style.opacity = '0';
+            });
+
+
+            // --- Initial Setup ---
+            createSeatingGrid();
+            searchBtn.addEventListener('click', handleSearch);
+            rollNoInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

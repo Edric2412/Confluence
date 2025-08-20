@@ -1,0 +1,24 @@
+{
+    "name": "Student Seating Visualizer",
+    "short_name": "Seating App",
+    "description": "Find your seat assignment quickly and easily",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#590d22",
+    "theme_color": "#590d22",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/static/icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icon-512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any maskable"
+        }
+    ]
+}
