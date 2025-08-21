@@ -87,10 +87,11 @@
             departmentCode = rollNo.substring(2, 5).toUpperCase();
             let batchYearPrefix = rollNo.substring(0, 2);
             
-            if (departmentCode === 'BPS' || departmentCode === 'MSW') {
+            // Corrected Year Logic
+            if (departmentCode === 'MSW') { // Special case for MSW
                 if (batchYearPrefix === '24') { year = '2nd year '; } 
                 else if (batchYearPrefix === '25') { year = '1st year '; }
-            } else {
+            } else { // Standard logic for all other departments
                 if (batchYearPrefix === '23') { year = '3rd year '; } 
                 else if (batchYearPrefix === '24') { year = '2nd year '; } 
                 else if (batchYearPrefix === '25') { year = '1st year '; }
