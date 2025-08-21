@@ -7,23 +7,21 @@
     <meta name="description" content="Find your seat assignment quickly and easily with our interactive seating visualizer.">
     <title>Student Seating Visualizer</title>
     
-    <!-- PWA Support -->
-    <link rel="manifest" href="/static/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     
     <script type="module">
         // data.js content
         const STUDENTS_DATA = [
             { "roll_no": "23BDS001", "name": "Adithya Raghavan", "department": "B.Sc. Data Science", "achiever": "yes" },
-            { "roll_no": "23BDS002", "name": "Anamika", "department": "B.Sc. Data Science", "achiever": "no" },
-            { "roll_no": "23BCA101", "name": "Idk", "department": "BCA", "achiever": "no" },
-            { "roll_no": "24BBA105", "name": "Someone", "department": "BBA", "achiever": "no" }
         ];
 
         const SEATING_DATA = [
-            { "department": "B.Sc. Data Science", "row_start": "T", "row_end": "V", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
-            { "department": "BBA", "row_start": "H", "row_end": "J", "seat_start": 16, "seat_end": 30, "color": "#0077b6" }
+            // Batch 1: 1st Year Data Science
+            { "department": "1st year B.Sc. Data Science", "row_start": "A", "row_end": "C", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+            // Batch 2: 2nd Year Data Science
+            { "department": "2nd year B.Sc. Data Science", "row_start": "D", "row_end": "F", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            // Batch 3: 3rd Year Data Science
+            { "department": "3rd year B.Sc. Data Science", "row_start": "G", "row_end": "I", "seat_start": 1, "seat_end": 15, "color": "#0077b6" }
         ];
 
         const ROW_LABELS = (
@@ -50,6 +48,8 @@
             const student = STUDENTS_DATA.find(s => s.roll_no === rollNo);
             let department;
             let achiever;
+            let departmentCode;
+            let year = '';
 
             const DEPARTMENT_MAPPING = {
                 "BDS": "B.Sc. Data Science",
@@ -70,25 +70,61 @@
             if (student) {
                 department = student.department;
                 achiever = student.achiever === "yes";
+                 // Extract department code and year from roll number for achievers as well
+                departmentCode = student.roll_no.substring(2, 5).toUpperCase();
+                let batchYearPrefix = student.roll_no.substring(0, 2);
+
+                if (departmentCode === 'BPS' || departmentCode === 'MSW') {
+                    if (batchYearPrefix === '24') {
+                        year = '2nd year ';
+                    } else if (batchYearPrefix === '25') {
+                        year = '1st year ';
+                    }
+                } else {
+                    if (batchYearPrefix === '23') {
+                        year = '3rd year ';
+                    } else if (batchYearPrefix === '24') {
+                        year = '2nd year ';
+                    } else if (batchYearPrefix === '25') {
+                        year = '1st year ';
+                    }
+                }
             } else {
                 // Extract department from roll number for non-achievers
-                const deptCode = rollNo.substring(2, 5).toUpperCase();
-                department = DEPARTMENT_MAPPING[deptCode];
+                    departmentCode = rollNo.substring(2, 5).toUpperCase();
+                    let batchYearPrefix = rollNo.substring(0, 2);
+                    
+
+                    if (departmentCode === 'BPS' || departmentCode === 'MSW') {
+                        if (batchYearPrefix === '24') {
+                            year = '2nd year ';
+                        } else if (batchYearPrefix === '25') {
+                            year = '1st year ';
+                        }
+                    } else {
+                        if (batchYearPrefix === '23') {
+                            year = '3rd year ';
+                        } else if (batchYearPrefix === '24') {
+                            year = '2nd year ';
+                        } else if (batchYearPrefix === '25') {
+                            year = '1st year ';
+                        }
+                    }
+
+                department = year + (DEPARTMENT_MAPPING[departmentCode] || departmentCode);
                 achiever = false; // Assume non-achiever if not in STUDENTS_DATA
 
-                if (!department) {
+                if (!year || !DEPARTMENT_MAPPING[departmentCode]) {
                     return { ...result, error: "Invalid roll number or department not found." };
                 }
             }
 
-
-
             if (achiever) {
                 return {
-                    name: student ? student.name : "Unknown Student",
+                    name: student.name,
                     department: department,
                     achiever: true,
-                    highlight_rows: ["0", "1"],
+                    highlight_rows: ["0", "1", "2"],
                     highlight_seats: [1, 15],
                     color: "#ff4d6d",
                     cache_time: Math.floor(Date.now() / 1000)
@@ -97,7 +133,7 @@
                 const seatInfo = SEATING_DATA.find(s => s.department === department);
                 if (!seatInfo) {
                     return {
-                        name: student ? student.name : "Unknown Student",
+                        name: "Unknown Student",
                         department: department,
                         achiever: false,
                         highlight_rows: [],
@@ -119,8 +155,9 @@
                 const color = seatInfo.color;
 
                 return {
-                    name: student ? student.name : "Unknown Student",
+                    name: "Unknown Student",
                     department: department,
+                    year: year.trim(),
                     achiever: false,
                     highlight_rows: highlightRows,
                     highlight_seats: highlightSeats,
@@ -130,29 +167,15 @@
             }
         }
         
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/static/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
+
     </script>
     
-    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -284,11 +307,9 @@
 </head>
 <body class="font-body antialiased text-gray-800 bg-federal_blue-100 flex flex-col min-h-screen">
 
-    <!-- Animated Gradient Background -->
     <div class="fixed inset-0 -z-10 bg-gradient-to-r from-non_photo_blue-500 via-light_cyan-500 to-light_cyan-600 animate-gradient" style="background-size: 200% 200%;"></div>
 
     <header class="w-full p-4 text-center">
-        <!-- Logo and Titles -->
         <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <img src="./images/kclas-removebg-preview.png" 
                  alt="KCLAS Logo" 
@@ -308,7 +329,6 @@
 
     <main class="flex-grow w-full flex flex-col items-center justify-center p-3 sm:p-6 lg:p-8 overflow-hidden">
 
-        <!-- Search Card -->
         <div id="search-card" class="relative w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-federal_blue-500/20 p-4 sm:p-6 text-center transition-all duration-300 animate-fadeIn overflow-hidden">
             <div class="card-content relative z-10">
                 <h2 class="text-xl sm:text-3xl text-federal_blue-600 mb-2 font-header font-normal">Find Your Seat</h2>
@@ -336,20 +356,16 @@
             <div class="card-glare"></div>
         </div>
 
-        <!-- Error Message -->
         <div id="error-alert" class="hidden w-full max-w-md bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-4 animate-fadeIn" role="alert">
             <strong class="font-bold">Oops!</strong>
             <span class="block sm:inline" id="error-message">Invalid roll number. Please try again.</span>
         </div>
 
-        <!-- Seating Visualization Section -->
         <div id="seating-chart-container" class="w-full max-w-7xl mt-4 sm:mt-8 bg-federal_blue-500/30 backdrop-blur-sm rounded-2xl shadow-lg shadow-federal_blue-500/40 border border-white/20 p-3 sm:p-6 hidden animate-fadeIn">
             <div class="flex flex-col gap-4 mb-4">
-                <!-- Welcome Message -->
                 <div id="welcome-message" class="text-white text-sm sm:text-base text-center bg-gradient-to-r from-federal_blue-500/60 via-honolulu_blue-500/60 to-federal_blue-500/60 backdrop-blur-sm rounded-lg p-4 hidden animate-fadeIn shadow-lg border border-white/10">
                 </div>
                 
-                <!-- Info Section -->
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
                     <div id="department-info" class="text-white font-bold text-base sm:text-xl text-center sm:text-left"></div>
                     <div class="flex flex-wrap justify-center sm:flex-nowrap items-center gap-3 sm:space-x-4">
@@ -360,8 +376,7 @@
             </div>
             <div class="relative">
                 <div id="seating-grid" class="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-honolulu_blue-500 scrollbar-track-transparent">
-                    <!-- Seats will be generated here by JavaScript -->
-                </div>
+                    </div>
                 <div class="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-t from-federal_blue-500/30 to-transparent"></div>
             </div>
             <div class="mt-2 text-center">
@@ -375,7 +390,6 @@
         <p>Made by the Department of Data Science</p>
     </footer>
 
-    <!-- Tooltip -->
     <div id="tooltip" class="hidden absolute bg-gray-900 text-white text-xs rounded-md py-1 px-2 pointer-events-none opacity-0 transform -translate-y-2 z-50"></div>
 
     <script>
@@ -442,8 +456,8 @@
                 stageEl.appendChild(stagePlatform);
                 fragment.appendChild(stageEl);
 
-                // Add two rows for achievers without labels
-                for (let i = 0; i < 2; i++) {
+                // Add three rows for achievers without labels
+                for (let i = 0; i < 3; i++) {
                     const rowEl = document.createElement('div');
                     rowEl.className = 'flex items-center space-x-1 my-2 min-w-max';
                     rowEl.style.animation = `fadeIn 0.5s ease-out forwards ${i * 0.02}s`;
@@ -606,25 +620,32 @@
 
             function applyHighlights(data) {
                 clearHighlights();
-                departmentInfo.textContent = data.department;
+                departmentInfo.textContent = `Department: ${data.department}`;
 
                 // Handle case where seating information is not yet available
                 if (data.no_seating_info) {
                     clearHighlights();
-                    welcomeMessage.innerHTML = `<div class=\"space-y-1\"><div>Seating information for the <span class=\"text-light_cyan-500 font-medium\">${data.department}</span> Department will be available soon.</div></div>`;
+                    welcomeMessage.innerHTML = `<div class=\"space-y-1\"><div>Seating information for the <span class=\"text-light_cyan-500 font-medium\">${data.department}</span> will be available soon.</div></div>`;
                     welcomeMessage.classList.remove('hidden');
                     return;
                 }
 
                 // Generate welcome message
                 const wingText = data.highlight_seats[0] <= 15 ? "left wing" : "right wing";
-                const rowsText = data.highlight_rows.length === 1 
-                    ? `row ${data.highlight_rows[0]}` 
-                    : `rows ${data.highlight_rows[0]} - ${data.highlight_rows[data.highlight_rows.length-1]}`;
+                
+                let rowsText;
+                if (data.achiever) {
+                    rowsText = "rows 1 - 3";
+                } else {
+                    rowsText = data.highlight_rows.length === 1 
+                        ? `row ${data.highlight_rows[0]}` 
+                        : `rows ${data.highlight_rows[0]} - ${data.highlight_rows[data.highlight_rows.length-1]}`;
+                }
+
 
                 // Create HTML structure for styled message
                 const nameSpan = `<span class="font-semibold text-base sm:text-lg">${data.name}</span>`;
-                const deptSpan = `<span class="text-light_cyan-500 font-medium">${data.department}</span>`;
+                const deptSpan = `<span class="text-light_cyan-500 font-medium">${data.department.replace(data.year, '').trim()}</span>`;
                 const rowSpan = `<span class="font-bold text-red-600">${rowsText}</span>`;
                 const wingSpan = `<span class="font-bold text-red-600">${wingText}</span>`;
                 
@@ -636,7 +657,7 @@
                          <div class="mt-1 text-light_cyan-500 font-semibold text-lg">Congratulations !! 🎉</div>
                        </div>`
                     : `<div class="space-y-1">
-                         <div>Student of ${deptSpan} Department! Your seating is in the</div>
+                         <div>Student of the ${data.year} ${deptSpan}! Your seating is in the</div>
                          <div class="text-base sm:text-lg font-medium">${rowSpan} in the ${wingSpan}</div>
                        </div>`;
                 
@@ -648,8 +669,8 @@
                     const inSeatRange = parseInt(seat.dataset.seat) >= data.highlight_seats[0] && parseInt(seat.dataset.seat) <= data.highlight_seats[1];
 
                     if (inRow && inSeatRange) {
-                        if (data.achiever || seat.dataset.achiever === 'true') {
-                            seat.classList.add('achiever-highlight');
+                        if (data.achiever && ["0","1","2"].includes(seat.dataset.row) ) {
+                             seat.classList.add('achiever-highlight');
                         } else {
                             seat.classList.add('highlight');
                             seat.style.backgroundColor = data.color;
