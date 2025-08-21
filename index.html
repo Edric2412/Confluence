@@ -12,10 +12,44 @@
     <script type="module">
         // data.js content
         const STUDENTS_DATA = [
-            { "roll_no": "23BDS001", "name": "Adithya Raghavan", "department": "B.Sc. Data Science", "achiever": "yes" },
-            { "roll_no": "23BDS002", "name": "Anamika", "department": "B.Sc. Data Science", "achiever": "no" },
-            { "roll_no": "23BCA101", "name": "Idk", "department": "BCA", "achiever": "no" },
-            { "roll_no": "24BBA105", "name": "Someone", "department": "BBA", "achiever": "no" }
+            { "roll_no": "23BDS014", "name": "Edric Jeffery Sam", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "23BDS025", "name": "Manasa Varshini", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "23BDS031", "name": "Nethra Vamsi", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "24BDS054", "name": "Vismita S", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "24BDS011", "name": "Harjit S V", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "24BDS012", "name": "G.A. Harshavartini", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "24BDS042", "name": "B. Santosh Raj", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "24BPY056", "name": "Vrishti H Jain", "department": "Psychology", "achiever": "yes" },
+            { "roll_no": "24BPY001", "name": "Aarya G Shah", "department": "Psychology", "achiever": "yes" },
+            { "roll_no": "23BPS016", "name": "Harish M", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "24MSW007", "name": "Mahalakshmi", "department": "Social Work", "achiever": "yes" },
+            { "roll_no": "23BIB018", "name": "Keerthana S", "department": "BBA IB", "achiever": "yes" },
+            { "roll_no": "25BBA021", "name": "Vishal KS", "department": "BBA", "achiever": "yes" },
+            { "roll_no": "25BBA061", "name": "Kavin M", "department": "BBA", "achiever": "yes" },
+            { "roll_no": "24BPA029", "name": "Laksita D", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "24BPA028", "name": "Lakshitha Sri V", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "24BPS017", "name": "Kavya. V", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "23BPS014", "name": "Gopika", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "25BVC014", "name": "Bala Vasanth", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "24BVC015", "name": "Rithick Ragunathan", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "24BVC016", "name": "Santhosh", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "24BVC011", "name": "Kishor", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "23BPA041", "name": "Rajiv Bhuvan", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "25BCO023", "name": "Tharneeth V", "department": "B.Com", "achiever": "yes" },
+            { "roll_no": "25BSS004", "name": "Gurteg Singh Anand", "department": "Sports Science", "achiever": "yes" },
+            { "roll_no": "25BPY018", "name": "Rithanya S", "department": "Psychology", "achiever": "yes" },
+            { "roll_no": "25BPS056", "name": "Suhani Parveen", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "25BBA023", "name": "Deepshikha", "department": "BBA", "achiever": "yes" },
+            { "roll_no": "23BPA049", "name": "Sandeep k", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "24BPS025", "name": "Revanth Kumar P", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "25BIB011", "name": "Raghul Ganesh", "department": "BBA IB", "achiever": "yes" },
+            { "roll_no": "25BPS040", "name": "Karthik R", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "25BCO054", "name": "Adithiya A", "department": "B.Com", "achiever": "yes" },
+            { "roll_no": "24BPY043", "name": "Shree Pranitha R", "department": "Psychology", "achiever": "yes" },
+            { "roll_no": "25BEO016", "name": "Pavithra", "department": "Economics", "achiever": "yes" },
+            { "roll_no": "25BCO002", "name": "Savitha S", "department": "B.Com", "achiever": "yes" },
+            { "roll_no": "25BPS014", "name": "G.K Roshini", "department": "BA. Political Science", "achiever": "yes" },
+            { "roll_no": "25BDS001", "name": "Yaalini", "department": "B.Sc. Data Science", "achiever": "yes" }
         ];
 
         const SEATING_DATA = [
@@ -372,9 +406,10 @@
         <div id="seating-chart-container" class="w-full max-w-7xl mt-4 sm:mt-8 bg-federal_blue-500/30 backdrop-blur-sm rounded-2xl shadow-lg shadow-federal_blue-500/40 border border-white/20 p-3 sm:p-6 hidden animate-fadeIn">
             <div class="flex flex-col gap-4 mb-4">
                 <!-- Welcome Message -->
-                <div id="welcome-message" class="text-white text-sm sm:text-base text-center bg-gradient-to-r from-federal_blue-500/60 via-honolulu_blue-500/60 to-federal_blue-500/60 backdrop-blur-sm rounded-lg p-4 hidden animate-fadeIn shadow-lg border border-white/10">
+                <div id="welcome-message" class="text-white text-sm sm:text-base text-center bg-federal_blue-600 backdrop-blur-sm rounded-lg p-4 hidden animate-fadeIn shadow-lg border border-white/10">
                 </div>
-                
+                <p id="scroll-prompt" class="hidden text-white/70 text-xs text-center -mt-2 animate-fadeIn">Scroll down to view your allocated seats</p>
+
                 <!-- Info Section -->
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
                     <div id="department-info" class="text-white font-bold text-base sm:text-xl text-center sm:text-left"></div>
@@ -415,6 +450,7 @@
             const errorMessage = document.getElementById('error-message');
             const tooltip = document.getElementById('tooltip');
             const welcomeMessage = document.getElementById('welcome-message');
+            const scrollPrompt = document.getElementById('scroll-prompt');
 
             const searchCard = document.getElementById('search-card');
             const glare = searchCard.querySelector('.card-glare');
@@ -646,6 +682,7 @@
                     seat.style.animationName = '';
                 });
                 welcomeMessage.classList.add('hidden');
+                scrollPrompt.classList.add('hidden');
             }
 
             function applyHighlights(data) {
@@ -657,6 +694,7 @@
                     clearHighlights();
                     welcomeMessage.innerHTML = `<div class=\"space-y-1\"><div>Seating information for the <span class=\"text-light_cyan-500 font-medium\">${data.department}</span> will be available soon.</div></div>`;
                     welcomeMessage.classList.remove('hidden');
+                    scrollPrompt.classList.remove('hidden');
                     return;
                 }
 
@@ -693,6 +731,7 @@
                 
                 welcomeMessage.innerHTML = message;
                 welcomeMessage.classList.remove('hidden');
+                scrollPrompt.classList.remove('hidden');
 
                 document.querySelectorAll('.seat').forEach(seat => {
                     const inRow = data.highlight_rows.includes(seat.dataset.row);
