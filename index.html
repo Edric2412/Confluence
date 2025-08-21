@@ -13,15 +13,27 @@
         // data.js content
         const STUDENTS_DATA = [
             { "roll_no": "23BDS001", "name": "Adithya Raghavan", "department": "B.Sc. Data Science", "achiever": "yes" },
+            { "roll_no": "23BDS002", "name": "Anamika", "department": "B.Sc. Data Science", "achiever": "no" },
+            { "roll_no": "23BCA101", "name": "Idk", "department": "BCA", "achiever": "no" },
+            { "roll_no": "24BBA105", "name": "Someone", "department": "BBA", "achiever": "no" }
         ];
 
         const SEATING_DATA = [
-            // Batch 1: 1st Year Data Science
-            { "department": "1st year B.Sc. Data Science", "row_start": "A", "row_end": "C", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
-            // Batch 2: 2nd Year Data Science
-            { "department": "2nd year B.Sc. Data Science", "row_start": "D", "row_end": "F", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
-            // Batch 3: 3rd Year Data Science
-            { "department": "3rd year B.Sc. Data Science", "row_start": "G", "row_end": "I", "seat_start": 1, "seat_end": 15, "color": "#0077b6" }
+            // Left Wing
+            { "department": "BBA", "row_start": "E", "row_end": "M", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+            { "department": "B.Com", "row_start": "N", "row_end": "V", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+            { "department": "B.Sc. Data Science", "row_start": "W", "row_end": "EE", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+            { "department": "BA. Political Science", "row_start": "FF", "row_end": "NN", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+            { "department": "MA. Political Science", "row_start": "FF", "row_end": "NN", "seat_start": 1, "seat_end": 15, "color": "#0077b6" },
+
+            // Right Wing
+            { "department": "Tamil Creative Writing", "row_start": "0", "row_end": "2", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            { "department": "Sports Science", "row_start": "A", "row_end": "B", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            { "department": "BBA IB", "row_start": "C", "row_end": "K", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            { "department": "B.Com PA", "row_start": "L", "row_end": "T", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            { "department": "Psychology", "row_start": "U", "row_end": "CC", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            { "department": "Visual Communication", "row_start": "DD", "row_end": "HH", "seat_start": 16, "seat_end": 30, "color": "#0077b6" },
+            { "department": "Economics", "row_start": "II", "row_end": "LL", "seat_start": 16, "seat_end": 30, "color": "#0077b6" }
         ];
 
         const ROW_LABELS = (
@@ -68,69 +80,52 @@
             };
 
             if (student) {
-                department = student.department;
                 achiever = student.achiever === "yes";
-                 // Extract department code and year from roll number for achievers as well
-                departmentCode = student.roll_no.substring(2, 5).toUpperCase();
-                let batchYearPrefix = student.roll_no.substring(0, 2);
-
-                if (departmentCode === 'BPS' || departmentCode === 'MSW') {
-                    if (batchYearPrefix === '24') {
-                        year = '2nd year ';
-                    } else if (batchYearPrefix === '25') {
-                        year = '1st year ';
-                    }
-                } else {
-                    if (batchYearPrefix === '23') {
-                        year = '3rd year ';
-                    } else if (batchYearPrefix === '24') {
-                        year = '2nd year ';
-                    } else if (batchYearPrefix === '25') {
-                        year = '1st year ';
-                    }
-                }
-            } else {
-                // Extract department from roll number for non-achievers
-                    departmentCode = rollNo.substring(2, 5).toUpperCase();
-                    let batchYearPrefix = rollNo.substring(0, 2);
-                    
-
-                    if (departmentCode === 'BPS' || departmentCode === 'MSW') {
-                        if (batchYearPrefix === '24') {
-                            year = '2nd year ';
-                        } else if (batchYearPrefix === '25') {
-                            year = '1st year ';
-                        }
-                    } else {
-                        if (batchYearPrefix === '23') {
-                            year = '3rd year ';
-                        } else if (batchYearPrefix === '24') {
-                            year = '2nd year ';
-                        } else if (batchYearPrefix === '25') {
-                            year = '1st year ';
-                        }
-                    }
-
-                department = year + (DEPARTMENT_MAPPING[departmentCode] || departmentCode);
-                achiever = false; // Assume non-achiever if not in STUDENTS_DATA
-
-                if (!year || !DEPARTMENT_MAPPING[departmentCode]) {
-                    return { ...result, error: "Invalid roll number or department not found." };
-                }
             }
+            
+            // Extract details from roll number regardless of whether student is in the list
+            departmentCode = rollNo.substring(2, 5).toUpperCase();
+            let batchYearPrefix = rollNo.substring(0, 2);
+            
+            if (departmentCode === 'BPS' || departmentCode === 'MSW') {
+                if (batchYearPrefix === '24') { year = '2nd year '; } 
+                else if (batchYearPrefix === '25') { year = '1st year '; }
+            } else {
+                if (batchYearPrefix === '23') { year = '3rd year '; } 
+                else if (batchYearPrefix === '24') { year = '2nd year '; } 
+                else if (batchYearPrefix === '25') { year = '1st year '; }
+            }
+
+            const baseDepartmentName = DEPARTMENT_MAPPING[departmentCode] || departmentCode;
+            department = year + baseDepartmentName;
+
+            if (!student) {
+                achiever = false;
+            }
+            
+            // Override: All MSW students are achievers
+            if (departmentCode === 'MSW') {
+                achiever = true;
+                department = year + "Social Work"; // Ensure department name is correct
+            }
+
+            if (!year || !DEPARTMENT_MAPPING[departmentCode]) {
+                 return { ...result, error: "Invalid roll number or department not found." };
+            }
+
 
             if (achiever) {
                 return {
-                    name: student.name,
+                    name: student ? student.name : "MSW Student",
                     department: department,
                     achiever: true,
-                    highlight_rows: ["0", "1", "2"],
+                    highlight_rows: ["1", "2", "A", "B", "C", "D"],
                     highlight_seats: [1, 15],
                     color: "#ff4d6d",
                     cache_time: Math.floor(Date.now() / 1000)
                 };
             } else {
-                const seatInfo = SEATING_DATA.find(s => s.department === department);
+                const seatInfo = SEATING_DATA.find(s => s.department === baseDepartmentName);
                 if (!seatInfo) {
                     return {
                         name: "Unknown Student",
@@ -147,7 +142,11 @@
                 const startIdx = ROW_LABELS.indexOf(seatInfo.row_start);
                 const endIdx = ROW_LABELS.indexOf(seatInfo.row_end);
 
-                const highlightRows = ROW_LABELS.slice(startIdx, endIdx + 1);
+                // Handle special case for rows '0', '1', '2'
+                const highlightRows = (seatInfo.row_start === "0") 
+                    ? ["0", "1", "2"] 
+                    : ROW_LABELS.slice(startIdx, endIdx + 1);
+
                 const highlightSeats = [
                     seatInfo.seat_start,
                     seatInfo.seat_end
@@ -170,12 +169,15 @@
 
     </script>
     
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -307,9 +309,11 @@
 </head>
 <body class="font-body antialiased text-gray-800 bg-federal_blue-100 flex flex-col min-h-screen">
 
+    <!-- Animated Gradient Background -->
     <div class="fixed inset-0 -z-10 bg-gradient-to-r from-non_photo_blue-500 via-light_cyan-500 to-light_cyan-600 animate-gradient" style="background-size: 200% 200%;"></div>
 
     <header class="w-full p-4 text-center">
+        <!-- Logo and Titles -->
         <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <img src="./images/kclas-removebg-preview.png" 
                  alt="KCLAS Logo" 
@@ -329,6 +333,7 @@
 
     <main class="flex-grow w-full flex flex-col items-center justify-center p-3 sm:p-6 lg:p-8 overflow-hidden">
 
+        <!-- Search Card -->
         <div id="search-card" class="relative w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-federal_blue-500/20 p-4 sm:p-6 text-center transition-all duration-300 animate-fadeIn overflow-hidden">
             <div class="card-content relative z-10">
                 <h2 class="text-xl sm:text-3xl text-federal_blue-600 mb-2 font-header font-normal">Find Your Seat</h2>
@@ -356,16 +361,20 @@
             <div class="card-glare"></div>
         </div>
 
+        <!-- Error Message -->
         <div id="error-alert" class="hidden w-full max-w-md bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-4 animate-fadeIn" role="alert">
             <strong class="font-bold">Oops!</strong>
             <span class="block sm:inline" id="error-message">Invalid roll number. Please try again.</span>
         </div>
 
+        <!-- Seating Visualization Section -->
         <div id="seating-chart-container" class="w-full max-w-7xl mt-4 sm:mt-8 bg-federal_blue-500/30 backdrop-blur-sm rounded-2xl shadow-lg shadow-federal_blue-500/40 border border-white/20 p-3 sm:p-6 hidden animate-fadeIn">
             <div class="flex flex-col gap-4 mb-4">
+                <!-- Welcome Message -->
                 <div id="welcome-message" class="text-white text-sm sm:text-base text-center bg-gradient-to-r from-federal_blue-500/60 via-honolulu_blue-500/60 to-federal_blue-500/60 backdrop-blur-sm rounded-lg p-4 hidden animate-fadeIn shadow-lg border border-white/10">
                 </div>
                 
+                <!-- Info Section -->
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
                     <div id="department-info" class="text-white font-bold text-base sm:text-xl text-center sm:text-left"></div>
                     <div class="flex flex-wrap justify-center sm:flex-nowrap items-center gap-3 sm:space-x-4">
@@ -376,7 +385,8 @@
             </div>
             <div class="relative">
                 <div id="seating-grid" class="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-honolulu_blue-500 scrollbar-track-transparent">
-                    </div>
+                    <!-- Seats will be generated here by JavaScript -->
+                </div>
                 <div class="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-t from-federal_blue-500/30 to-transparent"></div>
             </div>
             <div class="mt-2 text-center">
@@ -390,6 +400,7 @@
         <p>Made by the Department of Data Science</p>
     </footer>
 
+    <!-- Tooltip -->
     <div id="tooltip" class="hidden absolute bg-gray-900 text-white text-xs rounded-md py-1 px-2 pointer-events-none opacity-0 transform -translate-y-2 z-50"></div>
 
     <script>
@@ -455,8 +466,8 @@
                 stagePlatform.textContent = 'STAGE';
                 stageEl.appendChild(stagePlatform);
                 fragment.appendChild(stageEl);
-
-                // Add three rows for achievers without labels
+                
+                // Top 3 special rows (0, 1, 2)
                 for (let i = 0; i < 3; i++) {
                     const rowEl = document.createElement('div');
                     rowEl.className = 'flex items-center space-x-1 my-2 min-w-max';
@@ -465,36 +476,54 @@
 
                     const labelEl = document.createElement('div');
                     labelEl.className = 'w-10 text-center font-bold text-white/80 text-sm';
-                    labelEl.textContent = ''; // No label
                     rowEl.appendChild(labelEl);
 
                     const seatsFragment = document.createDocumentFragment();
                     const rowSeats = [];
 
-                    for (let j = 1; j <= SEATS_PER_ROW; j++) {
-                        const seatEl = document.createElement('div');
-                        seatEl.className = 'seat w-7 h-7 flex items-center justify-center rounded-md text-xs font-semibold text-federal_blue-100 cursor-pointer';
-                        
-                        seatEl.dataset.achiever = 'true';
-                        
-                        seatEl.dataset.row = `${i}`;
-                        seatEl.dataset.seat = j;
-                        seatEl.dataset.wing = j <= AISLE_AFTER_SEAT ? 'Left' : 'Right';
-                        seatEl.textContent = j;
-
-                        seatsFragment.appendChild(seatEl);
-                        rowSeats.push(seatEl);
-
-                        if (j === AISLE_AFTER_SEAT) {
-                            const aisleEl = document.createElement('div');
-                            aisleEl.className = 'w-8';
-                            seatsFragment.appendChild(aisleEl);
+                    // Left Wing
+                    if (i === 0) { // HOD Row
+                        const hodPlatform = document.createElement('div');
+                        hodPlatform.className = 'h-7 flex items-center justify-center rounded-md text-sm font-semibold text-federal_blue-100 bg-pacific_cyan/70';
+                        hodPlatform.textContent = "HOD's & Deans";
+                        hodPlatform.style.width = '29.75rem'; // Matches 15 seats + 14 spaces
+                        seatsFragment.appendChild(hodPlatform);
+                    } else { // Achiever Rows
+                        for (let j = 1; j <= AISLE_AFTER_SEAT; j++) {
+                            const seatEl = document.createElement('div');
+                            seatEl.className = 'seat w-7 h-7 flex items-center justify-center rounded-md text-xs font-semibold text-federal_blue-100 cursor-pointer';
+                            seatEl.dataset.achiever = 'true';
+                            seatEl.dataset.row = `${i}`;
+                            seatEl.dataset.seat = j;
+                            seatEl.dataset.wing = 'Left';
+                            seatEl.textContent = j;
+                            seatsFragment.appendChild(seatEl);
+                            rowSeats.push(seatEl);
                         }
                     }
+                    
+                    // Aisle
+                    const aisleEl = document.createElement('div');
+                    aisleEl.className = 'w-8';
+                    seatsFragment.appendChild(aisleEl);
+
+                    // Right Wing (Tamil Creative Writing)
+                    for (let j = 16; j <= SEATS_PER_ROW; j++) {
+                        const seatEl = document.createElement('div');
+                        seatEl.className = 'seat w-7 h-7 flex items-center justify-center rounded-md text-xs font-semibold text-federal_blue-100 cursor-pointer';
+                        seatEl.dataset.row = `${i}`;
+                        seatEl.dataset.seat = j;
+                        seatEl.dataset.wing = 'Right';
+                        seatEl.textContent = j;
+                        seatsFragment.appendChild(seatEl);
+                        rowSeats.push(seatEl);
+                    }
+
                     rowEl.appendChild(seatsFragment);
                     fragment.appendChild(rowEl);
                     SEAT_CACHE.set(`${i}`, rowSeats);
                 }
+
 
                 // Add a separator
                 const separator = document.createElement('hr');
@@ -505,7 +534,7 @@
                 ROW_LABELS.forEach((rowLabel, i) => {
                     const rowEl = document.createElement('div');
                     rowEl.className = 'flex items-center space-x-1 my-2 min-w-max';
-                    rowEl.style.animation = `fadeIn 0.5s ease-out forwards ${(i + 2) * 0.02}s`;
+                    rowEl.style.animation = `fadeIn 0.5s ease-out forwards ${(i + 3) * 0.02}s`; // Adjusted delay
                     rowEl.style.opacity = 0;
 
                     const labelEl = document.createElement('div');
@@ -635,7 +664,7 @@
                 
                 let rowsText;
                 if (data.achiever) {
-                    rowsText = "rows 1 - 3";
+                    rowsText = "rows 2, 3, A - D";
                 } else {
                     rowsText = data.highlight_rows.length === 1 
                         ? `row ${data.highlight_rows[0]}` 
@@ -669,7 +698,7 @@
                     const inSeatRange = parseInt(seat.dataset.seat) >= data.highlight_seats[0] && parseInt(seat.dataset.seat) <= data.highlight_seats[1];
 
                     if (inRow && inSeatRange) {
-                        if (data.achiever && ["0","1","2"].includes(seat.dataset.row) ) {
+                        if (data.achiever && ["1","2", "A", "B", "C", "D"].includes(seat.dataset.row) ) {
                              seat.classList.add('achiever-highlight');
                         } else {
                             seat.classList.add('highlight');
