@@ -12,82 +12,51 @@
     <script type="module">
         // data.js content
         const STUDENTS_DATA = [
-            { "roll_no": "24BPA017", "name": "Haritha Shri", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA031", "name": "Mhirunalini Saravanan", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "23BCO026", "name": "Nimatha B.", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "23BCO054", "name": "Subhiksha T.", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "23BPA026", "name": "Jenisha. J.", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "23BPA046", "name": "Sadhana A.", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BCO039", "name": "Roopa Sudhakar", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "24BCO041", "name": "Sanjna Senthil", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "23BPA024", "name": "Janani.V.S.", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "23BPA062", "name": "Vishnu Gayathri.P.", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BCO046", "name": "Smrithi D", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "24BCO059", "name": "Ananya Narayanan", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "23BCO021", "name": "Keerthana B.", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "23BCO061", "name": "Merlina Sweety Y", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "25BCO037", "name": "Adhithyakrishna", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "23BIB029", "name": "Pragadeeshwari", "department": "BBA IB", "achiever": "yes" },
-            { "roll_no": "25BCO034", "name": "Keerthan", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "25BBA064", "name": "Kavin T Shah", "department": "BBA", "achiever": "yes" },
-            { "roll_no": "25BDS051", "name": "Nethra", "department": "Data Science", "achiever": "yes" },
-            { "roll_no": "25BBA058", "name": "Amitha P S", "department": "BBA", "achiever": "yes" },
-            { "roll_no": "23BDS055", "name": "Mohith", "department": "Data Science", "achiever": "yes" },
-            { "roll_no": "25MSW018", "name": "Harishselvam", "department": "MSW 2nd Year", "achiever": "yes" },
-            { "roll_no": "25MSW004", "name": "Dakshesh", "department": "MSW 2nd Year", "achiever": "yes" },
-            { "roll_no": "24MSW011", "name": "Rakshith A P", "department": "MSW 2nd Year ", "achiever": "yes" },
-            { "roll_no": "25MSW015", "name": "Sri Aruneshwar T", "department": "MSW 2nd Year ", "achiever": "yes" },
-            { "roll_no": "25MSW018", "name": "Harishselvam", "department": "MSW 2nd Year ", "achiever": "yes" },
-            { "roll_no": "25MSW019", "name": "Suriya S D", "department": "MSW 2nd Year ", "achiever": "yes" },
-            { "roll_no": "25MSW023", "name": "Bhoomika", "department": "MSW 2nd Year ", "achiever": "yes" },
-            { "roll_no": "24MSW007", "name": "Mahalakshmi Saravanan", "department": "MSW 2nd Year e", "achiever": "yes" },
-            { "roll_no": "24MSW010", "name": "Narmatha", "department": "MSW 2nd Year", "achiever": "yes" },
-            { "roll_no": "24MSW002", "name": "Angel Zaneta", "department": "MSW 2nd Year ", "achiever": "yes" },
-            { "roll_no": "23BPS016", "name": "Harish M", "department": "Political Science", "achiever": "yes" },
-            { "roll_no": "25BPY013", "name": "Shreyaa", "department": "Psychology", "achiever": "yes" },
-            { "roll_no": "24BCO027", "name": "Lakshmi Devi", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "24BPY060", "name": "Allen Chris Joel", "department": "Psychology", "achiever": "yes" },
-            { "roll_no": "25BCO033", "name": "Bhavish Sakthivel", "department": "B.Com", "achiever": "yes" },
-            { "roll_no": "24BPA029", "name": "Laksita D", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA018", "name": "P Harshavardhan", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA039", "name": "Palaniappan S", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA012", "name": "Dhanushree M K", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA041", "name": "Alshahini R", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA009", "name": "Bala Anirudhhan K R", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA017", "name": "Haritha shri G", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA058", "name": "R B kavya", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA008", "name": "Aswin T", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA002", "name": "Abhi sri D", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA021", "name": "Janani A", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA011", "name": "Dhakshanya S", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA045", "name": "R Ravika", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA037", "name": "Neelesh S", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA014", "name": "Elakiyaa A", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA050", "name": "Sree harish R", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA019", "name": "Harshavardhini M", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA044", "name": "R Ramita", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA015", "name": "Gopika B", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA026", "name": "Keerthi vandhana VR", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA010", "name": "Bhavyanish S", "department": "B.Com PA", "achiever": "yes" },
-            { "roll_no": "24BPA038", "name": "Nivetha M", "department": "B.Com PA", "achiever": "yes" }
+            { "roll_no": "23BPY010", "name": "Dhatchina Moorthi TA", "department": "Psychology", "achiever": "yes" },
+            { "roll_no": "23BPA050", "name": "Sarweshware R", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "23BPA039", "name": "Pranesh S", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "24BPA021", "name": "A Janani", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "24BPA006", "name": "S Arunthathi", "department": "B.Com PA", "achiever": "yes" },
+            { "roll_no": "23TCW006", "name": "Princy A", "department": "TCW", "achiever": "yes" },
+            { "roll_no": "23TCW003", "name": "Nandhini Devi M", "department": "TCW", "achiever": "yes" },
+            { "roll_no": "24BCW008", "name": "Ramya M", "department": "B.Com CA", "achiever": "yes" },
+            { "roll_no": "24BCW006", "name": "Mahalakshmi M", "department": "B.Com CA", "achiever": "yes" },
+            { "roll_no": "25BCW002", "name": "Indhumathi M", "department": "B.Com CA", "achiever": "yes" },
+            { "roll_no": "24BCW001", "name": "Bhuvaneshwari S", "department": "B.Com CA", "achiever": "yes" },
+            { "roll_no": "23TCW009", "name": "Vaishali R", "department": "TCW", "achiever": "yes" },
+            { "roll_no": "24BVC021", "name": "Pavan", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "24BVC015", "name": "Rithick", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "24BVC016", "name": "Santhosh", "department": "Visual Communication", "achiever": "yes" },
+            { "roll_no": "25BSS009", "name": "Pradeep G", "department": "Sports Science", "achiever": "yes" },
+            { "roll_no": "25BSS002", "name": "Rhtyhan Nithesh", "department": "Sports Science", "achiever": "yes" },
+            { "roll_no": "24BSS012", "name": "Prasanth G", "department": "Sports Science", "achiever": "yes" },
+            { "roll_no": "23BDS053", "name": "Agshatha", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "23BDS034", "name": "Pragathi Venkatesan", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "23BDS008", "name": "Bhavatharani D", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "24BDS054", "name": "Vismita S", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "24BDS042", "name": "Santhoshraj B", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "25BDS001", "name": "K Yaalini", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "25BDS005", "name": "Prasanna Shreeya", "department": "Data Science", "achiever": "yes" },
+            { "roll_no": "24BBA017", "name": "Jhitesh Narayana S.U", "department": "BBA", "achiever": "yes" }
         ];
 
         const SEATING_DATA = [
-            { "department": "HODs & Deans", "row_start": "A", "row_end": "A", "seat_start": 1, "seat_end": 30, "color": "#FFD700" }, // Gold for HODs & Deans
-            { "department": "Achievers", "row_start": "B", "row_end": "B", "seat_start": 1, "seat_end": 15, "color": "#00BCD4" }, // Cyan for Achievers
-            { "department": "BBA", "row_start": "D", "row_end": "L", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Dark Blue for BBA
-            { "department": "BBA IB", "row_start": "M", "row_end": "U", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Dark Blue for BBA IB
-            { "department": "Psychology", "row_start": "V", "row_end": "CC", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Dark Blue for Psychology
-            { "department": "Data Science", "row_start": "DD", "row_end": "LL", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Dark Blue for Data Science
-            { "department": "MSW", "row_start": "MM", "row_end": "NN", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Dark Blue for MSW
-            { "department": "MA. Political Science", "row_start": "MM", "row_end": "NN", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Dark Blue for MA Pol Sci
-            { "department": "TCW", "row_start": "A", "row_end": "C", "seat_start": 16, "seat_end": 30, "color": "#00008B" }, // Dark Blue for TCW
-            { "department": "Sports Science", "row_start": "A", "row_end": "B", "seat_start": 16, "seat_end": 30, "color": "#00008B" }, // Dark Blue for Sports Science
-            { "department": "Visual Communication", "row_start": "C", "row_end": "G", "seat_start": 16, "seat_end": 30, "color": "#00008B" }, // Dark Blue for Visual Communication
-            { "department": "Economics", "row_start": "H", "row_end": "K", "seat_start": 16, "seat_end": 30, "color": "#00008B" }, // Dark Blue for Economics
-            { "department": "B.Com", "row_start": "L", "row_end": "T", "seat_start": 16, "seat_end": 30, "color": "#00008B" }, // Dark Blue for B.Com
-            { "department": "B.Com PA", "row_start": "U", "row_end": "CC", "seat_start": 16, "seat_end": 30, "color": "#00008B" }, // Dark Blue for B.Com PA
-            { "department": "BA. Political Science", "row_start": "DD", "row_end": "LL", "seat_start": 16, "seat_end": 30, "color": "#00008B" } // Dark Blue for Political Science
+            { "department": "HODs & Deans", "row_start": "1", "row_end": "1", "seat_start": 1, "seat_end": 15, "color": "#FFD700" }, // Left Wing
+            { "department": "Achievers", "row_start": "2", "row_end": "B", "seat_start": 1, "seat_end": 15, "color": "#FF4500" }, // Left Wing
+            { "department": "B.Com PA", "row_start": "C", "row_end": "K", "seat_start": 1, "seat_end": 15, "color": "#8A2BE2" }, // Left Wing
+            { "department": "BBA", "row_start": "L", "row_end": "T", "seat_start": 1, "seat_end": 15, "color": "#00CED1" }, // Left Wing
+            { "department": "BBA IB", "row_start": "U", "row_end": "BB", "seat_start": 1, "seat_end": 15, "color": "#FF69B4" }, // Left Wing
+            { "department": "Data Science", "row_start": "CC", "row_end": "JJ", "seat_start": 1, "seat_end": 15, "color": "#228B22" }, // Left Wing
+            { "department": "MSW", "row_start": "KK", "row_end": "MM", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Left Wing
+            { "department": "MA. Political Science", "row_start": "KK", "row_end": "MM", "seat_start": 1, "seat_end": 15, "color": "#00008B" }, // Left Wing
+
+            { "department": "TCW", "row_start": "1", "row_end": "3", "seat_start": 16, "seat_end": 30, "color": "#FFD700" }, // Right Wing
+            { "department": "Sports Science", "row_start": "A", "row_end": "B", "seat_start": 16, "seat_end": 30, "color": "#FF4500" }, // Right Wing
+            { "department": "B.Com", "row_start": "C", "row_end": "K", "seat_start": 16, "seat_end": 30, "color": "#8A2BE2" }, // Right Wing
+            { "department": "Psychology", "row_start": "L", "row_end": "T", "seat_start": 16, "seat_end": 30, "color": "#00CED1" }, // Right Wing
+            { "department": "Visual Communication", "row_start": "U", "row_end": "Y", "seat_start": 16, "seat_end": 30, "color": "#FF69B4" }, // Right Wing
+            { "department": "Economics", "row_start": "Z", "row_end": "CC", "seat_start": 16, "seat_end": 30, "color": "#228B22" }, // Right Wing
+            { "department": "BA. Political Science", "row_start": "DD", "row_end": "LL", "seat_start": 1, "seat_end": 30, "color": "#00008B" } // Right Wing
         ];
 
         const ROW_LABELS = (
@@ -163,10 +132,7 @@
                 achiever = false;
             }
             
-            // Override: Only 1st year MSW students are achievers
-            if (departmentCode === 'MSW' && batchYearPrefix === '25') {
-                achiever = true;
-            }
+
 
             if (!year || !DEPARTMENT_MAPPING[departmentCode]) {
                  return { ...result, error: "Invalid roll number or department not found." };
@@ -175,10 +141,10 @@
 
             if (achiever) {
                 return {
-                    name: student ? student.name : "MSW Student",
+                    name: student ? student.name : "Student",
                     department: department,
                     achiever: true,
-                    highlight_rows: ["1", "2", "A", "B", "C"],
+                    highlight_rows: ["1", "2", "A", "B"],
                     highlight_seats: [1, 15],
                     color: "#ff4d6d",
                     cache_time: Math.floor(Date.now() / 1000)
